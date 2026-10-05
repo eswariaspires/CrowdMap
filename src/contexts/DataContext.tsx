@@ -11,6 +11,10 @@ interface DataContextType {
   loading: boolean;
   userCount: number;
   addLocation: (loc: Omit<LocationItem, 'id' | 'createdAt' | 'averageRating' | 'reviewCount' | 'verificationStatus' | 'isActive'>) => Promise<string>;
+  updateLocation: (
+  id: string,
+  data: Partial<LocationItem>
+) => Promise<void>;
   approveLocation: (id: string) => Promise<void>;
   requestChangesLocation: (id: string, reason: string) => Promise<void>;
   rejectLocation: (id: string, reason?: string) => Promise<void>;
@@ -230,28 +234,26 @@ const addLocation: DataContextType['addLocation'] = async (locData) => {
     if (categoryCheckError) {
       throw categoryCheckError;
     }
-
-    // Create the category only when it doesn't already exist
     if (!existingCategory) {
-      const { count } = await supabase
-        .from('categories')
-        .select('*', { count: 'exact', head: true });
+  const { count } = await supabase
+    .from('categories')
+    .select('*', { count: 'exact', head: true });
 
-      const { error: categoryInsertError } = await supabase
-        .from('categories')
-        .insert({
-          name: categoryName,
-          icon_name: 'MapPin',
-          description: `Community resources under ${categoryName}`,
-          color: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-          is_active: true,
-          sort_order: (count ?? 0) + 1,
-        });
+  const { error: categoryInsertError } = await supabase
+    .from('categories')
+    .insert({
+      name: categoryName,
+      icon_name: 'MapPin',
+      description: `Community resources under ${categoryName}`,
+      color: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      is_active: true,
+      sort_order: (count ?? 0) + 1,
+    });
 
-      if (categoryInsertError) {
-        throw categoryInsertError;
-      }
-    }
+  if (categoryInsertError) {
+    throw categoryInsertError;
+  }
+}
   }
 
   // --------------------------------------------------
@@ -282,6 +284,52 @@ const addLocation: DataContextType['addLocation'] = async (locData) => {
   ]);
 
   return data.id as string;
+};
+
+const updateLocation: DataContextType['updateLocation'] = async (
+  id,
+  updatedData
+) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Please log in to edit a location.');
+  }
+
+  const existingLocation = locations.find((loc) => loc.id === id);
+
+  if (!existingLocation) {
+    throw new Error('Location not found.');
+  }
+
+  // Only the user who created the location can edit it
+  if (existingLocation.createdBy !== user.id) {
+    throw new Error('You can only edit locations you created.');
+  }
+
+  const row = locToRow(updatedData);
+
+  const { error } = await supabase
+    .from('locations')
+    .update({
+      ...row,
+      updated_at: new Date().toISOString(),
+
+      // Edited locations should go through moderation again
+      verification_status: 'PENDING',
+      rejection_reason: null,
+    })
+    .eq('id', id)
+    .eq('created_by', user.id);
+
+  if (error) {
+    console.error('Update location failed:', error);
+    throw error;
+  }
+
+  await reloadLocations();
 };
 
   const setLocationStatus = async (id: string, fields: Record<string, any>) => {
@@ -459,7 +507,12 @@ const addCategory: DataContextType['addCategory'] = async (cat) => {
   return (
     <DataContext.Provider value={{
       locations, reviews, reports, categories, savedPlaces, loading,  userCount,
-      addLocation, approveLocation, requestChangesLocation, rejectLocation, resubmitLocation,
+addLocation,
+updateLocation,
+approveLocation,
+requestChangesLocation,
+rejectLocation,
+resubmitLocation,
       addReview, approveReview, rejectReview, deleteReview,
       toggleSaveLocation, isLocationSaved, getSavedLocations,
       addReport, updateReportStatus,
