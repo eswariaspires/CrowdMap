@@ -23,6 +23,9 @@ export const AdminDashboard: React.FC = () => {
 
   const totalLocations = locations.length;
   const pendingLocations = locations.filter(l => l.verificationStatus === 'PENDING');
+  const pendingReviews = reviews.filter(
+  r => r.status === 'PENDING'
+);
   const approvedLocations = locations.filter(l => l.verificationStatus === 'APPROVED');
   const rejectedLocations = locations.filter(l => l.verificationStatus === 'REJECTED');
   const totalReviews = reviews.length;
@@ -48,8 +51,7 @@ export const AdminDashboard: React.FC = () => {
         <main className="p-6 space-y-6 max-w-7xl w-full mx-auto">
           
           {/* Key Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <StatCard
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">            <StatCard
               title="Total Users"
               value={userCount}
               icon={Users}
@@ -71,6 +73,14 @@ export const AdminDashboard: React.FC = () => {
               isPositive={pendingLocations.length === 0}
               colorBg="bg-amber-50 text-amber-600"
             />
+            <StatCard
+  title="Pending Review Moderation"
+  value={pendingReviews.length}
+  icon={MessageSquare}
+  change={pendingReviews.length > 0 ? 'Requires Review' : 'All Clear'}
+  isPositive={pendingReviews.length === 0}
+  colorBg="bg-purple-50 text-purple-600"
+/>
             <StatCard
               title="Total Reviews"
               value={totalReviews}
@@ -96,6 +106,7 @@ export const AdminDashboard: React.FC = () => {
                   </p>
                 </div>
               </div>
+              
 
               <Link
                 to="/admin/locations"
@@ -105,6 +116,34 @@ export const AdminDashboard: React.FC = () => {
               </Link>
             </div>
           )}
+
+          {pendingReviews.length > 0 && (
+  <div className="bg-purple-600 rounded-2xl p-5 text-white flex items-center justify-between shadow-md">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+        <MessageSquare className="w-5 h-5 text-white" />
+      </div>
+
+      <div>
+        <h3 className="font-extrabold text-base">
+          {pendingReviews.length} Pending Review
+          {pendingReviews.length === 1 ? '' : 's'} for Moderation
+        </h3>
+
+        <p className="text-xs text-purple-100 font-medium">
+          User reviews require moderation before they count toward public ratings.
+        </p>
+      </div>
+    </div>
+
+    <Link
+      to="/admin/reviews"
+      className="px-4 py-2 rounded-xl bg-white text-purple-900 font-bold text-xs hover:bg-purple-50 transition-colors shrink-0 shadow-sm"
+    >
+      Review Moderation →
+    </Link>
+  </div>
+)}
 
           {/* Charts & Analytics Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

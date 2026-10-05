@@ -99,28 +99,66 @@ export const AdminReports: React.FC = () => {
 
                         <td className="py-4 px-4">{getStatusBadge(rep.status)}</td>
 
-                        <td className="py-4 px-6 text-right space-x-2">
-                          {rep.status === 'OPEN' && (
-                            <button
-                              onClick={() => updateReportStatus(rep.id, 'REVIEWED', user?.uid)}
-                              className="px-2.5 py-1 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
-                            >
-                              Mark Reviewed
-                            </button>
-                          )}
-                          <button
-                            onClick={() => updateReportStatus(rep.id, 'RESOLVED', user?.uid)}
-                            className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700"
-                          >
-                            Resolve
-                          </button>
-                          <button
-                            onClick={() => updateReportStatus(rep.id, 'DISMISSED', user?.uid)}
-                            className="px-2.5 py-1 bg-slate-200 text-slate-700 rounded-lg font-bold hover:bg-slate-300"
-                          >
-                            Dismiss
-                          </button>
-                        </td>
+<td className="py-4 px-6 text-right">
+  {rep.status === 'OPEN' && (
+    <div className="flex justify-end gap-2">
+      <button
+        onClick={() =>
+          updateReportStatus(rep.id, 'REVIEWED', user?.id)
+        }
+        className="px-2.5 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors"
+      >
+        Mark Reviewed
+      </button>
+
+      <button
+        onClick={() =>
+          updateReportStatus(rep.id, 'RESOLVED', user?.id)
+        }
+        className="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors"
+      >
+        Resolve
+      </button>
+
+      <button
+        onClick={() =>
+          updateReportStatus(rep.id, 'DISMISSED', user?.id)
+        }
+        className="px-2.5 py-1.5 bg-slate-200 text-slate-700 rounded-lg font-bold hover:bg-slate-300 transition-colors"
+      >
+        Dismiss
+      </button>
+    </div>
+  )}
+
+  {rep.status === 'REVIEWED' && (
+    <div className="flex justify-end gap-2">
+      <button
+        onClick={() =>
+          updateReportStatus(rep.id, 'RESOLVED', user?.id)
+        }
+        className="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors"
+      >
+        Resolve
+      </button>
+
+      <button
+        onClick={() =>
+          updateReportStatus(rep.id, 'DISMISSED', user?.id)
+        }
+        className="px-2.5 py-1.5 bg-slate-200 text-slate-700 rounded-lg font-bold hover:bg-slate-300 transition-colors"
+      >
+        Dismiss
+      </button>
+    </div>
+  )}
+
+  {(rep.status === 'RESOLVED' || rep.status === 'DISMISSED') && (
+    <span className="text-[11px] text-slate-400 font-semibold">
+      No further action
+    </span>
+  )}
+</td>
                       </tr>
                     ))
                   )}
