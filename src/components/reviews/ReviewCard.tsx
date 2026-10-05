@@ -26,7 +26,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, onRepo
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <img
-            src={review.userPhoto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+            src={review.userPhoto }
             alt={review.userName}
             className="w-9 h-9 rounded-full object-cover border border-slate-200"
           />

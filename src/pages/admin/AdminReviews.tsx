@@ -112,7 +112,7 @@ export const AdminReviews: React.FC = () => {
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-2">
                               <img
-                                src={rev.userPhoto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+                                src={rev.userPhoto }
                                 alt={rev.userName}
                                 className="w-7 h-7 rounded-full object-cover border border-slate-200"
                               />

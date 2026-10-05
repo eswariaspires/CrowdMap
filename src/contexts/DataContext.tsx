@@ -207,24 +207,82 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [reloadAll, reloadLocations, reloadReviews, reloadReports, reloadCategories, reloadSaved]);
 
   // ---------------- Locations ----------------
-  const addLocation: DataContextType['addLocation'] = async (locData) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Please log in to add a location.');
-    const { data, error } = await supabase
-      .from('locations')
-      .insert({
-        ...locToRow(locData),
-        created_by: user.id,
-        created_by_name: locData.createdByName,
-        verification_status: 'PENDING', // community submissions always start as PENDING
-        source: 'user',
-      })
-      .select()
-      .single();
-    if (error) throw error;
-    await reloadLocations();
-    return data.id as string;
-  };
+const addLocation: DataContextType['addLocation'] = async (locData) => {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Please log in to add a location.');
+  }
+
+  const categoryName = String(locData.category ?? '').trim();
+
+  // --------------------------------------------------
+  // 1. Automatically create a category if it doesn't exist
+  // --------------------------------------------------
+  if (categoryName) {
+    const { data: existingCategory, error: categoryCheckError } =
+      await supabase
+        .from('categories')
+        .select('id, name')
+        .ilike('name', categoryName)
+        .maybeSingle();
+
+    if (categoryCheckError) {
+      throw categoryCheckError;
+    }
+
+    // Create the category only when it doesn't already exist
+    if (!existingCategory) {
+      const { count } = await supabase
+        .from('categories')
+        .select('*', { count: 'exact', head: true });
+
+      const { error: categoryInsertError } = await supabase
+        .from('categories')
+        .insert({
+          name: categoryName,
+          icon_name: 'MapPin',
+          description: `Community resources under ${categoryName}`,
+          color: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          is_active: true,
+          sort_order: (count ?? 0) + 1,
+        });
+
+      if (categoryInsertError) {
+        throw categoryInsertError;
+      }
+    }
+  }
+
+  // --------------------------------------------------
+  // 2. Create the location
+  // --------------------------------------------------
+  const { data, error } = await supabase
+    .from('locations')
+    .insert({
+      ...locToRow(locData),
+      created_by: user.id,
+      created_by_name: locData.createdByName,
+      verification_status: 'PENDING',
+      source: 'user',
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  // --------------------------------------------------
+  // 3. Refresh both locations AND categories
+  // --------------------------------------------------
+  await Promise.all([
+    reloadLocations(),
+    reloadCategories(),
+  ]);
+
+  return data.id as string;
+};
 
   const setLocationStatus = async (id: string, fields: Record<string, any>) => {
     must(await supabase.from('locations').update({ ...fields, updated_at: new Date().toISOString() }).eq('id', id));
@@ -321,17 +379,55 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // ---------------- Categories ----------------
-  const addCategory: DataContextType['addCategory'] = async (cat) => {
-    must(await supabase.from('categories').insert({
-      name: cat.name,
-      icon_name: cat.iconName,
-      description: cat.description,
-      color: cat.color,
-      is_active: true,
-      sort_order: categories.length + 1,
-    }));
+const addCategory: DataContextType['addCategory'] = async (cat) => {
+  const categoryName = String(cat.name).trim();
+
+  if (!categoryName) {
+    throw new Error('Category name is required.');
+  }
+
+  // Prevent duplicate categories
+  const { data: existingCategory, error: checkError } =
+    await supabase
+      .from('categories')
+      .select('id, name')
+      .ilike('name', categoryName)
+      .maybeSingle();
+
+  if (checkError) {
+    throw checkError;
+  }
+
+  // Already exists → just refresh and stop
+  if (existingCategory) {
     await reloadCategories();
-  };
+    return;
+  }
+
+  const { count } = await supabase
+    .from('categories')
+    .select('*', { count: 'exact', head: true });
+
+  const { error } = await supabase
+    .from('categories')
+    .insert({
+      name: categoryName,
+      icon_name: cat.iconName || 'MapPin',
+      description:
+        cat.description || `Community resources under ${categoryName}`,
+      color:
+        cat.color ||
+        'bg-emerald-100 text-emerald-800 border-emerald-200',
+      is_active: cat.isActive !== false,
+      sort_order: (count ?? 0) + 1,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  await reloadCategories();
+};
 
   const updateCategory: DataContextType['updateCategory'] = async (id, data) => {
     const row: Record<string, any> = {};

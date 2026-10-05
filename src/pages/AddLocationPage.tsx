@@ -35,6 +35,7 @@ export const AddLocationPage: React.FC = () => {
   // Form Data State
   const [name, setName] = useState('');
   const [category, setCategory] = useState<CategoryName>('Study');
+  const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
   const [latitude, setLatitude] = useState<number>(16.5062);
@@ -251,16 +252,23 @@ const handleUseCurrentLocation = () => {
   const handleNextStep = () => {
     setError(null);
     if (currentStep === 1) {
-      if (!name.trim()) {
-        setError('Please enter a location name.');
-        return;
-      }
-      if (!description.trim()) {
-        setError('Please provide a description for the place.');
-        return;
-      }
-      setCurrentStep(2);
-    } else if (currentStep === 2) {
+  if (!name.trim()) {
+    setError('Please enter a location name.');
+    return;
+  }
+
+  if (category === 'Other' && !customCategory.trim()) {
+    setError('Please enter a category name.');
+    return;
+  }
+
+  if (!description.trim()) {
+    setError('Please provide a description for the place.');
+    return;
+  }
+
+  setCurrentStep(2);
+}else if (currentStep === 2) {
       if (!address.trim()) {
         setError('Please enter an address or landmark for the place.');
         return;
@@ -291,17 +299,20 @@ const handleUseCurrentLocation = () => {
 
       setUploadProgress(90);
 
+      const finalCategory =
+  category === 'Other'
+    ? customCategory.trim()
+    : category;
+
       const locId = await addLocation({
         name: name.trim(),
-        category,
+        category: finalCategory,
         description: description.trim(),
         address: address.trim(),
         latitude,
         longitude,
         googleMapsUrl: googleMapsUrl || `https://maps.google.com/?q=${latitude},${longitude}`,
-        imageUrls: uploadedUrls.length > 0 ? uploadedUrls : [
-          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'
-        ],
+        imageUrls: uploadedUrls,
         createdBy: user?.uid || 'anon-user',
         createdByName: user?.name || 'Community Member',
       });
@@ -474,35 +485,68 @@ const handleUseCurrentLocation = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Category *
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  {categories.filter(c => c.isActive !== false).map((cat) => {
-                    const isSel = category === cat.name;
-                    return (
-                      <button
-                        type="button"
-                        key={cat.id}
-                        onClick={() => setCategory(cat.name)}
-                        className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between h-20 ${
-                          isSel
-                            ? 'border-brand-600 bg-brand-50/60 ring-2 ring-brand-500/20'
-                            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/50'
-                        }`}
-                      >
-                        <span className={`text-xs font-bold ${isSel ? 'text-brand-800' : 'text-slate-800'}`}>
-                          {cat.name}
-                        </span>
-                        <span className="text-[10px] text-slate-500 line-clamp-1">
-                          {cat.description}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+<div>
+  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+    Category *
+  </label>
+
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+    {categories.filter(c => c.isActive !== false).map((cat) => {
+      const isSel = category === cat.name;
+
+      return (
+        <button
+          type="button"
+          key={cat.id}
+          onClick={() => {
+            setCategory(cat.name);
+            if (cat.name !== 'Other') {
+              setCustomCategory('');
+            }
+          }}
+          className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between h-20 ${
+            isSel
+              ? 'border-brand-600 bg-brand-50/60 ring-2 ring-brand-500/20'
+              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/50'
+          }`}
+        >
+          <span
+            className={`text-xs font-bold ${
+              isSel ? 'text-brand-800' : 'text-slate-800'
+            }`}
+          >
+            {cat.name}
+          </span>
+
+          <span className="text-[10px] text-slate-500 line-clamp-1">
+            {cat.description}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+
+  {/* Custom Category */}
+  {category === 'Other' && (
+    <div className="mt-4">
+      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+        Enter Category Name *
+      </label>
+
+      <input
+        type="text"
+        value={customCategory}
+        onChange={(e) => setCustomCategory(e.target.value)}
+        placeholder="e.g. Book Exchange, Community Garden, Donation Center"
+        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 font-medium text-sm placeholder:text-slate-400"
+      />
+
+      <p className="text-[11px] text-slate-500 mt-1.5">
+        Enter a specific category if the place does not fit the categories above.
+      </p>
+    </div>
+  )}
+</div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">

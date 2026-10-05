@@ -148,11 +148,13 @@ export const LocationDetailPage: React.FC = () => {
         {/* Photo Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2 h-72 sm:h-96 rounded-2xl overflow-hidden bg-slate-100 shadow-sm border border-slate-200 relative">
-            <img
-              src={location.imageUrls[0] || 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80'}
-              alt={location.name}
-              className="w-full h-full object-cover"
-            />
+            {location.imageUrls?.[0] && (
+  <img
+    src={location.imageUrls[0]}
+    alt={location.name}
+    className="w-full h-full object-cover"
+  />
+)}
             <div className="absolute top-4 left-4 flex items-center gap-2">
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-slate-900 shadow-sm">
                 {location.category}

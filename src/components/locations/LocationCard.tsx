@@ -13,7 +13,7 @@ interface LocationCardProps {
 export const LocationCard: React.FC<LocationCardProps> = ({ location, showStatus = false }) => {
   const primaryImage = location.imageUrls && location.imageUrls.length > 0
     ? location.imageUrls[0]
-    : 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80';
+    : null
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-1">

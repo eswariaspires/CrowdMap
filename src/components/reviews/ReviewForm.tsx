@@ -18,10 +18,10 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ locationId, onSubmit }) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!comment.trim()) {
-      setError('Please enter your review comment.');
-      return;
-    }
+    if (!rating) {
+  setError('Please select a rating.');
+  return;
+}
 
     try {
       setSubmitting(true);
@@ -79,7 +79,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ locationId, onSubmit }) 
           onChange={(e) => setComment(e.target.value)}
           placeholder="Share helpful details for community members (e.g. noise level, outlet availability, quiet hours, staff)..."
           className="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-slate-800 placeholder-slate-400"
-          required
+          
         />
       </div>
 

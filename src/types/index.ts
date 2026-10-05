@@ -35,7 +35,7 @@ export interface LocationItem {
   id: string;
   name: string;
   description: string;
-  category: CategoryName;
+  category: string;
   address: string;
   latitude: number;
   longitude: number;

@@ -111,9 +111,7 @@ export const AdminSidebar: React.FC = () => {
         <div className="flex items-center gap-2.5 min-w-0">
           <img
             src={
-              user?.profileImage ||
-              'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'
-            }
+              user?.profileImage  }
             alt="Admin"
             className="w-8 h-8 rounded-full object-cover border border-slate-700"
           />

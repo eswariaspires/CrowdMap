@@ -21,10 +21,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062, 
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [],
     createdBy: 'user-alex',
     createdByName: 'Alex Chen',
     createdAt: '2026-08-15T10:30:00Z',
@@ -42,10 +39,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [],
     createdBy: 'user-maria',
     createdByName: 'Maria Santos',
     createdAt: '2026-08-18T14:15:00Z',
@@ -63,9 +57,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [],
     createdBy: 'user-devon',
     createdByName: 'Devon Vance',
     createdAt: '2026-08-20T09:00:00Z',
@@ -83,9 +75,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062, 
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [ ],
     createdBy: 'user-sam',
     createdByName: 'Sam Taylor',
     createdAt: '2026-08-22T11:45:00Z',
@@ -103,9 +93,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude:  80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [ ],
     createdBy: 'user-elena',
     createdByName: 'Elena Rostova',
     createdAt: '2026-08-25T16:20:00Z',
@@ -123,9 +111,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [ ],
     createdBy: 'user-jordan',
     createdByName: 'Jordan Lee',
     createdAt: '2026-08-26T08:10:00Z',
@@ -143,9 +129,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [ ],
     createdBy: 'user-priya',
     createdByName: 'Priya Sharma',
     createdAt: '2026-08-27T13:00:00Z',
@@ -163,9 +147,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [ ],
     createdBy: 'user-liam',
     createdByName: 'Liam O\'Connor',
     createdAt: '2026-08-28T17:30:00Z',
@@ -183,9 +165,7 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     latitude: 16.5062,
     longitude: 80.6480,
     googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
-    imageUrls: [
-      'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80'
-    ],
+    imageUrls: [],
     createdBy: 'user-chloe',
     createdByName: 'Chloe Bennett',
     createdAt: '2026-08-30T10:00:00Z',

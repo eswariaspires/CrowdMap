@@ -29,7 +29,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ title, subtitle }) => 
             <span className="block text-[10px] text-brand-700 font-bold uppercase tracking-wider">System Admin</span>
           </div>
           <img
-            src={user?.profileImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'}
+            src={user?.profileImage }
             alt={user?.name}
             className="w-9 h-9 rounded-full object-cover border border-brand-200"
           />

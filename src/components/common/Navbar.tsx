@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   MapPin,
@@ -28,6 +28,30 @@ export const Navbar: React.FC = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+const handleSectionNavigation = (section: string) => {
+  if (location.pathname === '/') {
+    requestAnimationFrame(() => {
+      document.getElementById(section)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+    return;
+  }
+
+  navigate('/');
+
+  setTimeout(() => {
+    document.getElementById(section)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, 150);
+};
+
+const isSectionActive = (section: string) => {
+  return location.pathname === '/' && location.hash === section;
+};
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
@@ -53,30 +77,45 @@ export const Navbar: React.FC = () => {
             </Link>
 
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1">
-              <Link
-                to="/explore"
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive('/explore')
-                    ? 'bg-brand-50 text-brand-700 font-semibold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                Explore Map
-              </Link>
-              <a
-                href="/#categories"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-              >
-                Categories
-              </a>
-              <a
-                href="/#how-it-works"
-                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-              >
-                How it Works
-              </a>
-            </nav>
+<nav className="hidden md:flex items-center gap-1">
+
+  {/* Explore Map */}
+  <Link
+    to="/explore"
+    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+      isActive('/explore')
+        ? 'bg-brand-50 text-brand-700 font-semibold'
+        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+    }`}
+  >
+    Explore Map
+  </Link>
+
+  {/* Categories */}
+<button
+  onClick={() => handleSectionNavigation('categories')}
+  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    isSectionActive('#categories')
+      ? 'bg-brand-50 text-brand-700 font-semibold'
+      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+  }`}
+>
+  Categories
+</button>
+
+  {/* How it Works */}
+<button
+  onClick={() => handleSectionNavigation('how-it-works')}
+  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    isSectionActive('#how-it-works')
+      ? 'bg-brand-50 text-brand-700 font-semibold'
+      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+  }`}
+>
+  How it Works
+</button>
+
+</nav>
           </div>
 
           {/* Right Action Items */}

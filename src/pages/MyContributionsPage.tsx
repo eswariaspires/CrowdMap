@@ -147,7 +147,7 @@ export const MyContributionsPage: React.FC = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
                           <img
-                            src={loc.imageUrls[0] || 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=150&q=80'}
+                            src={loc.imageUrls[0] }
                             alt={loc.name}
                             className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0"
                           />

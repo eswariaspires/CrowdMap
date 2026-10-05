@@ -33,27 +33,43 @@ export const AdminLocations: React.FC = () => {
     return loc.verificationStatus === activeTab;
   });
 
-  const handleApprove = async (id: string) => {
+const handleApprove = async (id: string) => {
+  try {
     await approveLocation(id);
-    if (selectedLocation?.id === id) {
-      setSelectedLocation(prev => prev ? { ...prev, verificationStatus: 'APPROVED' } : null);
-    }
-  };
 
-  const handleConfirmAction = async () => {
-    if (!selectedLocation || !actionModal) return;
-
-    if (actionModal === 'REJECT') {
-      await rejectLocation(selectedLocation.id, modalReason || 'Inaccurate or inappropriate location submission');
-      setSelectedLocation(prev => prev ? { ...prev, verificationStatus: 'REJECTED', rejectionReason: modalReason } : null);
-    } else if (actionModal === 'REQUEST_CHANGES') {
-      await requestChangesLocation(selectedLocation.id, modalReason || 'Incomplete details provided. Please review address and description.');
-      setSelectedLocation(prev => prev ? { ...prev, verificationStatus: 'NEEDS_CHANGES', rejectionReason: modalReason } : null);
-    }
-
+    // Close inspection modal after successful publish
+    setSelectedLocation(null);
     setActionModal(null);
     setModalReason('');
-  };
+  } catch (error) {
+    console.error('Error publishing location:', error);
+  }
+};
+
+const handleConfirmAction = async () => {
+  if (!selectedLocation || !actionModal) return;
+
+  try {
+    if (actionModal === 'REJECT') {
+      await rejectLocation(
+        selectedLocation.id,
+        modalReason || 'Inaccurate or inappropriate location submission'
+      );
+    } else if (actionModal === 'REQUEST_CHANGES') {
+      await requestChangesLocation(
+        selectedLocation.id,
+        modalReason || 'Incomplete details provided. Please review address and description.'
+      );
+    }
+
+    // Close both modals after successful action
+    setActionModal(null);
+    setSelectedLocation(null);
+    setModalReason('');
+  } catch (error) {
+    console.error('Error processing location action:', error);
+  }
+};
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
@@ -129,7 +145,7 @@ export const AdminLocations: React.FC = () => {
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
                             <img
-                              src={loc.imageUrls[0] || 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=150&q=80'}
+                              src={loc.imageUrls[0]}
                               alt={loc.name}
                               className="w-10 h-10 rounded-xl object-cover border border-slate-200"
                             />

@@ -15,9 +15,6 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
-  Users,
-  Star,
-  Layers,
   Map as MapIcon
 } from 'lucide-react';
 import { MapView } from '../components/map/MapView';
@@ -94,20 +91,41 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Stat Counters */}
-              <div className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-4">
-                <div>
-                  <span className="text-2xl font-extrabold text-slate-900">100%</span>
-                  <span className="block text-xs font-semibold text-slate-500">Verified Places</span>
-                </div>
-                <div>
-                  <span className="text-2xl font-extrabold text-brand-700">4.8★</span>
-                  <span className="block text-xs font-semibold text-slate-500">Community Rating</span>
-                </div>
-                <div>
-                  <span className="text-2xl font-extrabold text-slate-900">8</span>
-                  <span className="block text-xs font-semibold text-slate-500">Categories</span>
-                </div>
-              </div>
+<div className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-4">
+  <div>
+    <span className="text-2xl font-extrabold text-slate-900">
+      {approvedLocations.length}
+    </span>
+    <span className="block text-xs font-semibold text-slate-500">
+      Verified Places
+    </span>
+  </div>
+
+  <div>
+    <span className="text-2xl font-extrabold text-brand-700">
+      {approvedLocations.length > 0
+        ? (
+            approvedLocations.reduce(
+              (sum, loc) => sum + loc.averageRating,
+              0
+            ) / approvedLocations.length
+          ).toFixed(1)
+        : '0.0'}★
+    </span>
+    <span className="block text-xs font-semibold text-slate-500">
+      Community Rating
+    </span>
+  </div>
+
+  <div>
+    <span className="text-2xl font-extrabold text-slate-900">
+      {categories.filter(c => c.isActive !== false).length}
+    </span>
+    <span className="block text-xs font-semibold text-slate-500">
+      Categories
+    </span>
+  </div>
+</div>
             </div>
 
             {/* Right Hero Interactive Map Preview */}
@@ -157,7 +175,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Category Section */}
-      <section id="categories" className="py-16 bg-white border-y border-slate-200/80">
+      <section
+  id="categories"
+  className="scroll-mt-16 py-16 bg-white border-y border-slate-200/80"
+>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-700">Categories</h2>
@@ -189,7 +210,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-slate-50">
+      <section
+  id="how-it-works"
+  className="scroll-mt-16 py-20 bg-slate-50"
+>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-2">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-700">How it works</h2>

@@ -30,7 +30,7 @@ export const ExplorePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [minRating, setMinRating] = useState<number>(0);
-  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(true);
+  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'newest' | 'rating' | 'reviews'>('rating');
   const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(null);
 
@@ -127,7 +127,7 @@ export const ExplorePage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         
         {/* Search & Filter Header Bar */}
         <div className="bg-white rounded-2xl border border-slate-200/80 p-4 mb-6 shadow-sm space-y-4">
@@ -207,22 +207,32 @@ export const ExplorePage: React.FC = () => {
             >
               All Categories
             </button>
-            {categories.filter(c => c.isActive !== false).map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  setSelectedCategory(cat.name);
-                  setSearchParams({ category: cat.name });
-                }}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedCategory === cat.name
-                    ? 'bg-brand-700 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {cat.name}
-              </button>
-            ))}
+{Array.from(
+  new Set([
+    ...categories
+      .filter(c => c.isActive !== false)
+      .map(c => c.name),
+
+    ...locations
+      .map(loc => loc.category)
+      .filter(Boolean),
+  ])
+).map((categoryName) => (
+  <button
+    key={categoryName}
+    onClick={() => {
+      setSelectedCategory(categoryName);
+      setSearchParams({ category: categoryName });
+    }}
+    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+      selectedCategory === categoryName
+        ? 'bg-brand-700 text-white shadow-xs'
+        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+    }`}
+  >
+    {categoryName}
+  </button>
+))}
           </div>
 
           {/* Filter Bar Controls */}
@@ -283,7 +293,7 @@ export const ExplorePage: React.FC = () => {
         </div>
 
         {/* Split View Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Location Cards */}
           <div className={`lg:col-span-6 space-y-4 ${mobileTab === 'map' ? 'hidden lg:block' : 'block'}`}>
@@ -317,7 +327,7 @@ export const ExplorePage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-1">
+              <div className="space-y-5 pr-1 pb-4">
                 {filteredLocations.map((loc) => (
                   <div
                     key={loc.id}
@@ -335,7 +345,7 @@ export const ExplorePage: React.FC = () => {
 
           {/* Right Column: Leaflet Map & Selected Location Preview Drawer */}
           <div className={`lg:col-span-6 sticky top-20 ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
-            <div className="bg-white rounded-2xl p-2 border border-slate-200/80 shadow-sm h-[calc(100vh-220px)] min-h-[480px] relative flex flex-col">
+<div className="bg-white rounded-2xl p-2 border border-slate-200/80 shadow-sm h-[calc(100vh-260px)] min-h-[520px] relative flex flex-col">
               <div className="flex-1 rounded-xl overflow-hidden">
                 <MapView
                   locations={filteredLocations}
@@ -358,11 +368,17 @@ export const ExplorePage: React.FC = () => {
                   </button>
 
                   <div className="flex gap-4 items-start">
-                    <img
-                      src={selectedLocation.imageUrls[0] || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=200&q=80'}
-                      alt={selectedLocation.name}
-                      className="w-20 h-20 rounded-xl object-cover border border-slate-200 shrink-0"
-                    />
+                    {selectedLocation.imageUrls?.[0] ? (
+  <img
+    src={selectedLocation.imageUrls[0]}
+    alt={selectedLocation.name}
+    className="w-20 h-20 rounded-xl object-cover border border-slate-200 shrink-0"
+  />
+) : (
+  <div className="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
+    <MapPin className="w-6 h-6 text-slate-400" />
+  </div>
+)}
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">

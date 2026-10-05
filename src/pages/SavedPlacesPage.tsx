@@ -71,7 +71,7 @@ export const SavedPlacesPage: React.FC = () => {
               >
                 <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
                   <img
-                    src={loc.imageUrls[0] || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80'}
+                    src={loc.imageUrls[0] }
                     alt={loc.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
