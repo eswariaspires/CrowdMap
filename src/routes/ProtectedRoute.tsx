@@ -34,7 +34,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requir
         </div>
         <h2 className="text-2xl font-extrabold tracking-tight">Access Denied — Admin Authorization Required</h2>
         <p className="text-xs text-slate-400 max-w-md leading-relaxed">
-          Your current account (<strong className="text-white">{user.email}</strong>) has the <strong className="text-emerald-400">USER</strong> role. Normal users cannot access administrative verification routes or elevate themselves to Admin per Firestore security policies.
+          Your current account (<strong className="text-white">{user.email}</strong>) has the <strong className="text-emerald-400">USER</strong> role. Normal users cannot access administrative verification routes or elevate themselves to Admin per PostgreSQL security policies.
         </p>
         <div className="pt-2 flex items-center gap-3">
           <a href="/explore" className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 font-bold text-xs text-slate-200">

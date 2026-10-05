@@ -121,7 +121,7 @@ export const ExplorePage: React.FC = () => {
     ? [selectedLocation.latitude, selectedLocation.longitude]
     : userLocation
     ? userLocation
-    : [42.3601, -71.0589];
+    : [16.5062, 80.6480];
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
@@ -340,7 +340,7 @@ export const ExplorePage: React.FC = () => {
                 <MapView
                   locations={filteredLocations}
                   center={mapCenter}
-                  zoom={13}
+                  zoom={14}
                   selectedLocationId={selectedLocation?.id}
                   onMarkerClick={(loc) => setSelectedLocation(loc)}
                   height="100%"

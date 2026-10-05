@@ -116,7 +116,7 @@ export const LandingPage: React.FC = () => {
                 <div className="h-[420px] rounded-2xl overflow-hidden">
                   <MapView
                     locations={previewLocations}
-                    center={[42.3601, -71.0589]}
+                    center={[16.5062, 80.6480]}
                     zoom={13}
                     height="100%"
                   />

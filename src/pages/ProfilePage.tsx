@@ -45,16 +45,28 @@ export const ProfilePage: React.FC = () => {
         {/* Profile Card Header */}
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="relative group shrink-0">
-            <img
-              src={user.profileImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-              alt={user.name}
-              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
-            />
-            <label className="absolute bottom-0 right-0 p-2 bg-slate-900 text-white rounded-full cursor-pointer hover:bg-brand-700 transition-colors shadow-sm">
-              <Camera className="w-4 h-4" />
-              <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
-            </label>
-          </div>
+  {user.profileImage ? (
+    <img
+      src={user.profileImage}
+      alt={user.name}
+      className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
+    />
+  ) : (
+    <div className="w-24 h-24 rounded-full bg-brand-700 text-white flex items-center justify-center border-4 border-white shadow-md text-3xl font-bold">
+      {user.name?.charAt(0).toUpperCase() || '?'}
+    </div>
+  )}
+
+  <label className="absolute bottom-0 right-0 p-2 bg-slate-900 text-white rounded-full cursor-pointer hover:bg-brand-700 transition-colors shadow-sm">
+    <Camera className="w-4 h-4" />
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleAvatarChange}
+      className="hidden"
+    />
+  </label>
+</div>
 
           <div className="space-y-2 text-center sm:text-left flex-1">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

@@ -20,7 +20,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ title, subtitle }) => 
       <div className="flex items-center gap-4">
         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span className="font-semibold text-slate-800">Firestore Live Sync</span>
+          <span className="font-semibold text-slate-800">PostgreSQL Live Sync</span>
         </div>
 
         <div className="flex items-center gap-2">

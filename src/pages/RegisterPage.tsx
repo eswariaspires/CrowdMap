@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Lock, Mail, User as UserIcon, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, Mail, User as UserIcon, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const RegisterPage: React.FC = () => {
@@ -44,9 +44,13 @@ export const RegisterPage: React.FC = () => {
         {/* Header */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 group mb-2">
-            <div className="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center shadow-sm">
-              <MapPin className="w-5 h-5 text-emerald-300" />
-            </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+  <img
+    src="/Logo.png"
+    alt="CrowdMap Logo"
+    className="w-10 h-10 object-contain"
+  />
+</div>
             <span className="text-xl font-extrabold text-slate-900">
               Crowd<span className="text-brand-600">Map</span>
             </span>

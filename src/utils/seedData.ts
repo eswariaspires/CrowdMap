@@ -18,9 +18,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Spacious reading room equipped with silent zones, power outlets at every desk, and climate control. Ideal for deep work and concentration.',
     category: 'Study',
     address: '45 University Ave, Central District, Floor 2',
-    latitude: 42.3601,
-    longitude: -71.0589,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3601,-71.0589',
+    latitude: 16.5062, 
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'
@@ -39,9 +39,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Generous portion meals under $10. Fresh ingredients, healthy grain bowls, and daily fresh smoothies in a clean setting.',
     category: 'Food',
     address: '112 College Street, West Side',
-    latitude: 42.3625,
-    longitude: -71.0650,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3625,-71.0650',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80'
@@ -60,9 +60,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'High-speed public fiber connection (up to 300 Mbps). Outdoor shaded seating with solar charging benches.',
     category: 'Wi-Fi',
     address: 'Civic Plaza Green, East Wing Benches',
-    latitude: 42.3585,
-    longitude: -71.0540,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3585,-71.0540',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'
     ],
@@ -80,9 +80,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Certified hardware repair shop. Quick turnaround for screen replacement, RAM upgrades, battery replacements, and virus removal.',
     category: 'Repair',
     address: '88 Tech Arcade, Sub-level 1',
-    latitude: 42.3540,
-    longitude: -71.0610,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3540,-71.0610',
+    latitude: 16.5062, 
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80'
     ],
@@ -100,9 +100,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Public municipal library with extensive research archives, free digital book lending, quiet workspace rooms, and printing services.',
     category: 'Study',
     address: '700 Main Street, Cultural District',
-    latitude: 42.3650,
-    longitude: -71.0510,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3650,-71.0510',
+    latitude: 16.5062,
+    longitude:  80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062, 80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=800&q=80'
     ],
@@ -120,9 +120,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Walk-in wellness clinic for local residents. Consultations, vaccinations, general health checks, and prescription services.',
     category: 'Healthcare',
     address: '200 Health Sciences Way, North Wing',
-    latitude: 42.3570,
-    longitude: -71.0690,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3570,-71.0690',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80'
     ],
@@ -140,9 +140,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Self-service cloud printing kiosk. Offers poster printing, document scanning, binding, and low-cost black & white copying.',
     category: 'Other',
     address: 'Civic Center Mall, Kiosk 4',
-    latitude: 42.3590,
-    longitude: -71.0600,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3590,-71.0600',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&w=800&q=80'
     ],
@@ -160,9 +160,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Major transit interchange connecting 6 city bus routes with direct express connections to key city areas.',
     category: 'Transport',
     address: 'Central Station Bay 3 & 4',
-    latitude: 42.3520,
-    longitude: -71.0560,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3520,-71.0560',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80'
     ],
@@ -180,9 +180,9 @@ export const INITIAL_LOCATIONS: LocationItem[] = [
     description: 'Coffee shop open until 2 AM with high-speed Wi-Fi, plentiful power outlets, and artisanal coffee.',
     category: 'Study',
     address: '304 Elm Street, South District',
-    latitude: 42.3560,
-    longitude: -71.0630,
-    googleMapsUrl: 'https://maps.google.com/?q=42.3560,-71.0630',
+    latitude: 16.5062,
+    longitude: 80.6480,
+    googleMapsUrl: 'https://maps.google.com/?q=16.5062,80.6480',
     imageUrls: [
       'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80'
     ],

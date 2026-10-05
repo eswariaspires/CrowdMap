@@ -5,7 +5,12 @@ import { LocationItem } from '../../types';
 import { RatingStars } from '../common/RatingStars';
 import { VerifiedBadge } from '../common/Badge';
 import { Link } from 'react-router-dom';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+
+const DEFAULT_CENTER: [number, number] = [16.5062, 80.6480]; // Vijayawada
+
+const isValidCenter = (c: any): c is [number, number] =>
+  Array.isArray(c) && c.length === 2 && Number.isFinite(c[0]) && Number.isFinite(c[1]);
 
 // Custom SVG Leaflet Pin Icons
 const createCustomIcon = (category: string, isSelected: boolean = false) => {
@@ -67,12 +72,25 @@ const MapClickHandler: React.FC<{ onSelect?: (lat: number, lng: number) => void 
   return null;
 };
 
-// Map Fly-To controller
+// Map Fly-To controller (ignores invalid coordinates instead of crashing)
 const MapFlyTo: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
-    map.flyTo(center, zoom, { duration: 1.2 });
-  }, [center, zoom, map]);
+    if (!isValidCenter(center) || !Number.isFinite(zoom)) return;
+    try {
+      map.invalidateSize();
+      const size = map.getSize();
+      if (size.x > 0 && size.y > 0) {
+        map.flyTo(center, zoom, { duration: 1.2 });
+      } else {
+        // container has no size yet: flyTo would produce NaN, so jump without animation
+        map.setView(center, zoom, { animate: false });
+      }
+    } catch (err) {
+      console.warn('Map move skipped:', err);
+    }
+    // depend on the numbers, not the array object, so it only flies when the center really changes
+  }, [center?.[0], center?.[1], zoom, map]);
   return null;
 };
 
@@ -90,7 +108,7 @@ interface MapViewProps {
 
 export const MapView: React.FC<MapViewProps> = ({
   locations,
-  center = [42.3601, -71.0589],
+  center = DEFAULT_CENTER,
   zoom = 13,
   selectedLocationId,
   onMarkerClick,
@@ -99,11 +117,21 @@ export const MapView: React.FC<MapViewProps> = ({
   onLocationSelect,
   height = '100%',
 }) => {
+  const safeCenter: [number, number] = isValidCenter(center) ? center : DEFAULT_CENTER;
+  const safeZoom = Number.isFinite(zoom) ? zoom : 13;
+  const validLocations = locations.filter(
+    (l) => Number.isFinite(l.latitude) && Number.isFinite(l.longitude)
+  );
+  const validPicked =
+    selectedLatLng && Number.isFinite(selectedLatLng.lat) && Number.isFinite(selectedLatLng.lng)
+      ? selectedLatLng
+      : null;
+
   return (
     <div style={{ height, width: '100%' }} className="relative rounded-2xl overflow-hidden shadow-inner border border-slate-200">
       <MapContainer
-        center={center}
-        zoom={zoom}
+        center={safeCenter}
+        zoom={safeZoom}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
@@ -112,13 +140,13 @@ export const MapView: React.FC<MapViewProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <MapFlyTo center={center} zoom={zoom} />
+        <MapFlyTo center={safeCenter} zoom={safeZoom} />
 
         {pickerMode && <MapClickHandler onSelect={onLocationSelect} />}
 
         {/* Location Markers */}
         {!pickerMode &&
-          locations.map((loc) => {
+          validLocations.map((loc) => {
             const isSelected = loc.id === selectedLocationId;
             return (
               <Marker
@@ -172,16 +200,16 @@ export const MapView: React.FC<MapViewProps> = ({
           })}
 
         {/* Picker Mode Marker */}
-        {pickerMode && selectedLatLng && (
+        {pickerMode && validPicked && (
           <Marker
-            position={[selectedLatLng.lat, selectedLatLng.lng]}
+            position={[validPicked.lat, validPicked.lng]}
             icon={createCustomIcon('Other', true)}
           >
             <Popup>
               <div className="p-2 text-xs font-semibold text-slate-800">
                 📍 Selected Location Point<br/>
                 <span className="text-[10px] text-slate-500 font-mono">
-                  {selectedLatLng.lat.toFixed(5)}, {selectedLatLng.lng.toFixed(5)}
+                  {validPicked.lat.toFixed(5)}, {validPicked.lng.toFixed(5)}
                 </span>
               </div>
             </Popup>
@@ -192,7 +220,7 @@ export const MapView: React.FC<MapViewProps> = ({
       {pickerMode && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-slate-900/90 backdrop-blur-md text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
           <MapPin className="w-4 h-4 text-emerald-400 animate-bounce" />
-          <span>Click anywhere on map to pin location coordinates</span>
+          <span>Click the map to set the exact location</span>
         </div>
       )}
     </div>

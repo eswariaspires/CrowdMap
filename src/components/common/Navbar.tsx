@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  MapPin, 
-  PlusCircle, 
-  User as UserIcon, 
-  ShieldCheck, 
-  LogOut, 
-  Menu, 
+import {
+  MapPin,
+  PlusCircle,
+  User as UserIcon,
+  ShieldCheck,
+  LogOut,
+  Menu,
   X,
   BookOpen,
   Bookmark
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+
+// ===== Change your brand here =====
+const LOGO_SRC = '/Logo.png';      // replace the file public/logo.svg with your own logo
+const BRAND_FIRST = 'Crowd';
+const BRAND_SECOND = 'Map';
+const TAGLINE = 'Knowledge Hub';
+// ==================================
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -26,19 +33,21 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Left: Logo & Links */}
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center shadow-md shadow-brand-700/20 group-hover:scale-105 transition-transform">
-                <MapPin className="w-5 h-5 text-emerald-300" />
-              </div>
+              <img
+                src={LOGO_SRC}
+                alt={`${BRAND_FIRST}${BRAND_SECOND} logo`}
+                className="w-10 h-10 rounded-xl object-contain shadow-md shadow-brand-700/20 group-hover:scale-105 transition-transform"
+              />
               <div className="flex flex-col">
                 <span className="text-xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                  Crowd<span className="text-brand-600">Map</span>
+                  {BRAND_FIRST}<span className="text-brand-600">{BRAND_SECOND}</span>
                 </span>
                 <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest -mt-0.5">
-                  Knowledge Hub
+                  {TAGLINE}
                 </span>
               </div>
             </Link>
@@ -87,18 +96,24 @@ export const Navbar: React.FC = () => {
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 transition-colors border border-slate-200"
                 >
-                  <img
-                    src={user.profileImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
+                  {user.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt={user.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-brand-700 text-white flex items-center justify-center text-sm font-bold">
+                      {user.name?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                  )}
                   <span className="text-xs font-semibold text-slate-700 max-w-[110px] truncate pr-1">
                     {user.name}
                   </span>
                 </button>
 
                 {profileDropdownOpen && (
-                  <div 
+                  <div
                     className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 divide-y divide-slate-100"
                     onMouseLeave={() => setProfileDropdownOpen(false)}
                   >
@@ -257,6 +272,13 @@ export const Navbar: React.FC = () => {
                 className="block py-2 text-base font-medium text-slate-700"
               >
                 My Contributions
+              </Link>
+              <Link
+                to="/my-reviews"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-medium text-slate-700"
+              >
+                My Reviews
               </Link>
               <button
                 onClick={() => {

@@ -16,7 +16,7 @@ A separate administrative system manages verification, moderation, users, report
 | **Routes & Layout** | Split-view discovery (`/explore`), detail view (`/location/:id`), saved places (`/saved`), contribution wizard (`/add-location`), profile (`/profile`) | Moderation suite (`/admin`, `/admin/locations`, `/admin/reports`, `/admin/reviews`, `/admin/users`, `/admin/categories`, `/admin/analytics`, `/admin/settings`) |
 | **Interactive Map** | Leaflet + OpenStreetMap with location preview drawer & marker clustering | Side-by-side inspection workspace with interactive pinned coordinates |
 | **Place Contributions** | 4-Step progressive contribution flow (`PENDING` / *Under review* status) | Verification queue with *Publish*, *Request changes (with reason)*, & *Reject* |
-| **Photos Storage** | Firebase Cloud Storage uploads with live progress | Photo URL review & moderation |
+| **Photos Storage** | Supabase Cloud Storage uploads with live progress | Photo URL review & moderation |
 | **Ratings & Reviews** | Community reviews with serverless aggregate ratings | Review moderation (Keep, Hide, Remove) |
 | **Saved Places** | Bookmark toggle and saved collection (`/saved`) | N/A |
 | **Category Management** | Filter chips & category discovery | Create, edit, and disable categories |
@@ -34,10 +34,10 @@ A separate administrative system manages verification, moderation, users, report
        (Step 1: Info, Step 2: Map, Step 3: Photos, Step 4: Review)
                     │
                     ▼
-         Firebase Cloud Storage
+         Supabase Cloud Storage
                     │
                     ▼
-          Cloud Firestore Database
+          Cloud PostgreSQL Database
         (verificationStatus = PENDING)
                     │
                     ▼
@@ -61,8 +61,8 @@ A separate administrative system manages verification, moderation, users, report
 
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons, React Router
 - **Interactive Mapping**: Leaflet + OpenStreetMap (No Google Maps API required; external directions links supported)
-- **Backend Services**: Firebase Authentication, Cloud Firestore, Firebase Cloud Storage, Cloud Functions
-- **Security & Validation**: Firestore Security Rules, Storage Security Rules, Serverless Cloud Function rating aggregations
+- **Backend Services**: Supabase Authentication, Cloud PostgreSQL, Supabase Cloud Storage, Cloud Functions
+- **Security & Validation**: PostgreSQL Security Rules, Storage Security Rules, Serverless Cloud Function rating aggregations
 
 ---
 
@@ -85,13 +85,13 @@ Production build output is generated in `dist/`.
 
 ## 5. ENVIRONMENT VARIABLES
 
-Copy `.env.example` to `.env` and fill in your Firebase project configuration credentials:
+Copy `.env.example` to `.env` and fill in your Supabase project configuration credentials:
 
 ```env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
+VITE_SUPABASE_API_KEY=your_api_key
+VITE_SUPABASE_AUTH_DOMAIN=your_auth_domain
+VITE_SUPABASE_PROJECT_ID=your_project_id
+VITE_SUPABASE_STORAGE_BUCKET=your_storage_bucket
+VITE_SUPABASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_SUPABASE_APP_ID=your_app_id
 ```

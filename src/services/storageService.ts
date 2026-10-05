@@ -1,31 +1,30 @@
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage, isFirebaseConfigured } from '../lib/firebase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+
+const BUCKET = 'location-images';
 
 /**
- * Uploads an image file to Firebase Storage.
- * Falls back to DataURL encoding when Firebase Storage is not configured.
+ * Uploads an image to Supabase Storage and returns its public URL.
+ * Falls back to a base64 DataURL if Supabase is not configured or the upload fails.
  */
 export async function uploadImageToStorage(file: File, pathFolder: string = 'locations'): Promise<string> {
-  if (isFirebaseConfigured && storage && storage.app) {
+  if (isSupabaseConfigured) {
     try {
-      const fileExt = file.name.split('.').pop();
-      const filename = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-      const storageRef = ref(storage, `${pathFolder}/${filename}`);
-      
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `${pathFolder}/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
+      const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+      if (error) throw error;
+      return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
     } catch (err) {
-      console.warn('Firebase Storage upload failed, falling back to base64 DataURL:', err);
+      console.warn('Supabase Storage upload failed, falling back to base64 DataURL:', err);
     }
   }
 
-  // Fallback: Read file as Data URL for local demo persistence
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
+    reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
     reader.readAsDataURL(file);
   });

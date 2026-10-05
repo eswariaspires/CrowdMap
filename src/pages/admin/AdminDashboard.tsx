@@ -19,7 +19,7 @@ import { StatCard } from '../../components/admin/StatCard';
 import { StatusBadge } from '../../components/common/Badge';
 
 export const AdminDashboard: React.FC = () => {
-  const { locations, reviews, reports, categories, approveLocation, rejectLocation } = useData();
+  const { locations, reviews, reports, categories, userCount,  approveLocation, rejectLocation } = useData();
 
   const totalLocations = locations.length;
   const pendingLocations = locations.filter(l => l.verificationStatus === 'PENDING');
@@ -51,7 +51,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard
               title="Total Users"
-              value={142}
+              value={userCount}
               icon={Users}
               change="+12% this week"
               colorBg="bg-blue-50 text-blue-600"

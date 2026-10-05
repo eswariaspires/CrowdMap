@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { 
   MapPin, 
@@ -13,7 +13,8 @@ import {
   Building2,
   FileText,
   Map as MapIcon,
-  Check
+  Check,
+  LocateFixed
 } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -36,19 +37,87 @@ export const AddLocationPage: React.FC = () => {
   const [category, setCategory] = useState<CategoryName>('Study');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [latitude, setLatitude] = useState<number>(42.3601);
-  const [longitude, setLongitude] = useState<number>(-71.0589);
+  const [latitude, setLatitude] = useState<number>(16.5062);
+  const [longitude, setLongitude] = useState<number>(80.6480);
   const [googleMapsUrl, setGoogleMapsUrl] = useState('');
-
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [geocodeMessage, setGeocodeMessage] = useState<string | null>(null);
   // Image Upload State
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  
   const [uploading, setUploading] = useState(false);
+  const [locatingUser, setLocatingUser] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
 
   // File Change Handler
+
+  // Automatically locate the typed address on the map
+useEffect(() => {
+  if (currentStep !== 2) return;
+
+  const trimmedAddress = address.trim();
+
+  if (!trimmedAddress) {
+    setGeocodeMessage(null);
+    return;
+  }
+
+  const timeoutId = window.setTimeout(async () => {
+    try {
+      setIsGeocoding(true);
+      setGeocodeMessage(null);
+
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=in&q=${encodeURIComponent(trimmedAddress)}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Unable to search this address.');
+      }
+
+      const results = await response.json();
+
+      if (!results || results.length === 0) {
+        setGeocodeMessage('Location not found. Try adding a nearby area, city, or landmark.');
+        return;
+      }
+
+      const result = results[0];
+
+      const lat = Number(result.lat);
+      const lng = Number(result.lon);
+
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        setGeocodeMessage('The location returned by the map service is invalid.');
+        return;
+      }
+
+      // Move map marker to the geocoded location
+      setLatitude(Number(lat.toFixed(6)));
+      setLongitude(Number(lng.toFixed(6)));
+
+      // Update Google Maps link
+      setGoogleMapsUrl(
+        `https://maps.google.com/?q=${lat.toFixed(6)},${lng.toFixed(6)}`
+      );
+
+      setGeocodeMessage(`Location found: ${result.display_name}`);
+    } catch (err) {
+      console.error('Geocoding error:', err);
+      setGeocodeMessage('Unable to locate this address. You can select the location manually on the map.');
+    } finally {
+      setIsGeocoding(false);
+    }
+  }, 700);
+
+  return () => {
+    window.clearTimeout(timeoutId);
+  };
+}, [address, currentStep]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -80,11 +149,104 @@ export const AddLocationPage: React.FC = () => {
   };
 
   const handleMapLocationSelect = (lat: number, lng: number) => {
-    setLatitude(Number(lat.toFixed(6)));
-    setLongitude(Number(lng.toFixed(6)));
-    setGoogleMapsUrl(`https://maps.google.com/?q=${lat.toFixed(6)},${lng.toFixed(6)}`);
-  };
+  const roundedLat = Number(lat.toFixed(6));
+  const roundedLng = Number(lng.toFixed(6));
 
+  setLatitude(roundedLat);
+  setLongitude(roundedLng);
+
+  setGoogleMapsUrl(
+    `https://maps.google.com/?q=${roundedLat},${roundedLng}`
+  );
+
+  setGeocodeMessage('Exact location selected from the map.');
+};
+const handleUseCurrentLocation = () => {
+  if (!navigator.geolocation) {
+    setError('Location services are not supported by your browser.');
+    return;
+  }
+
+  setLocatingUser(true);
+  setError(null);
+  setGeocodeMessage(null);
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        const lat = Number(position.coords.latitude.toFixed(6));
+        const lng = Number(position.coords.longitude.toFixed(6));
+
+        // Move marker to user's current location
+        setLatitude(lat);
+        setLongitude(lng);
+
+        // Update Google Maps URL
+        setGoogleMapsUrl(
+          `https://maps.google.com/?q=${lat},${lng}`
+        );
+
+        // Reverse geocode coordinates into a readable address
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+
+          if (result.display_name) {
+            setAddress(result.display_name);
+            setGeocodeMessage('Current location detected.');
+          } else {
+            setGeocodeMessage(
+              'Current location detected. You can adjust the exact point on the map.'
+            );
+          }
+        } else {
+          setGeocodeMessage(
+            'Current location detected. You can adjust the exact point on the map.'
+          );
+        }
+      } catch (err) {
+        console.error('Current location reverse geocoding error:', err);
+
+        setGeocodeMessage(
+          'Current location detected. You can adjust the exact point on the map.'
+        );
+      } finally {
+        setLocatingUser(false);
+      }
+    },
+    (error) => {
+      console.error('Geolocation error:', error);
+
+      setLocatingUser(false);
+
+      if (error.code === error.PERMISSION_DENIED) {
+        setError(
+          'Location permission was denied. Please allow location access in your browser.'
+        );
+      } else if (error.code === error.POSITION_UNAVAILABLE) {
+        setError(
+          'Your current location could not be determined. Please try again.'
+        );
+      } else if (error.code === error.TIMEOUT) {
+        setError(
+          'Location request timed out. Please try again.'
+        );
+      } else {
+        setError(
+          'Unable to get your current location. Please select the location manually on the map.'
+        );
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    }
+  );
+};
   // Step Nav validation
   const handleNextStep = () => {
     setError(null);
@@ -377,22 +539,80 @@ export const AddLocationPage: React.FC = () => {
                   Step 2: Location & Address
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Search or click on the map to accurately place the marker for community members.
-                </p>
+  Search for an address, use your current location, or click the map to set the exact point.
+</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Address or Landmark *
-                </label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. 75 Boylston St, Boston, MA 02116 (or nearest street intersection)"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 font-medium text-sm placeholder:text-slate-400"
-                />
-              </div>
+             <div>
+  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+    Address or Landmark *
+  </label>
+
+  {/* Address Search Input */}
+  <div className="relative">
+    <input
+      type="text"
+      value={address}
+      onChange={(e) => {
+        setAddress(e.target.value);
+        setGeocodeMessage(null);
+      }}
+      placeholder="e.g. Mandadam, Vijayawada"
+      className="w-full px-4 py-3 pr-12 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 font-medium text-sm placeholder:text-slate-400"
+    />
+
+    {isGeocoding && (
+      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+        <div className="w-4 h-4 border-2 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+      </div>
+    )}
+  </div>
+
+  {/* Current Location Option */}
+  <div className="flex items-center gap-3 my-4">
+    <div className="h-px bg-slate-200 flex-1" />
+
+    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+      or
+    </span>
+
+    <div className="h-px bg-slate-200 flex-1" />
+  </div>
+
+  <button
+    type="button"
+    onClick={handleUseCurrentLocation}
+    disabled={locatingUser}
+    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 hover:border-brand-300 font-semibold text-xs transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+  >
+    {locatingUser ? (
+      <>
+        <div className="w-4 h-4 border-2 border-brand-200 border-t-brand-700 rounded-full animate-spin" />
+        <span>Detecting your location...</span>
+      </>
+    ) : (
+      <>
+        <LocateFixed className="w-4 h-4" />
+        <span>Use My Current Location</span>
+      </>
+    )}
+  </button>
+
+  {/* Geocoding / Location Message */}
+  {geocodeMessage && (
+    <div
+      className={`mt-2 text-xs font-medium ${
+        geocodeMessage.startsWith('Location found') ||
+        geocodeMessage.startsWith('Current location detected') ||
+        geocodeMessage.startsWith('Exact location selected')
+          ? 'text-emerald-600'
+          : 'text-amber-600'
+      }`}
+    >
+      {geocodeMessage}
+    </div>
+  )}
+</div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">

@@ -33,11 +33,11 @@ export const AdminSettings: React.FC = () => {
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="font-bold text-slate-400 block uppercase tracking-wider">Database Engine</span>
-                <span className="font-bold text-emerald-700 text-sm">Google Cloud Firestore</span>
+                <span className="font-bold text-emerald-700 text-sm">Google Cloud PostgreSQL</span>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="font-bold text-slate-400 block uppercase tracking-wider">Storage Bucket</span>
-                <span className="font-bold text-blue-700 text-sm">Firebase Cloud Storage</span>
+                <span className="font-bold text-blue-700 text-sm">Supabase Cloud Storage</span>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="font-bold text-slate-400 block uppercase tracking-wider">Map Engine</span>

@@ -7,7 +7,6 @@ import {
   Flag, 
   Users, 
   Settings, 
-  ShieldCheck, 
   LogOut, 
   ArrowLeft,
   Layers,
@@ -42,11 +41,20 @@ export const AdminSidebar: React.FC = () => {
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-800 flex items-center justify-between">
         <Link to="/admin" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-brand-700 text-white flex items-center justify-center shadow-lg shadow-brand-700/30">
-            <ShieldCheck className="w-5 h-5 text-emerald-300" />
+          
+          {/* CrowdMap Logo */}
+          <div className="w-10 h-10 flex items-center justify-center shrink-0">
+            <img
+              src="/Logo.png"
+              alt="CrowdMap Logo"
+              className="w-10 h-10 object-contain"
+            />
           </div>
+
           <div>
-            <h1 className="text-base font-extrabold text-white tracking-tight">CrowdMap</h1>
+            <h1 className="text-base font-extrabold text-white tracking-tight">
+              CrowdMap
+            </h1>
             <span className="text-[10px] font-bold text-brand-400 tracking-widest uppercase block -mt-1">
               Admin Management Portal
             </span>
@@ -75,7 +83,11 @@ export const AdminSidebar: React.FC = () => {
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 ${active ? 'text-emerald-300' : 'text-slate-400'}`} />
+                <Icon
+                  className={`w-4 h-4 ${
+                    active ? 'text-emerald-300' : 'text-slate-400'
+                  }`}
+                />
                 <span>{item.label}</span>
               </div>
             </Link>
@@ -98,13 +110,21 @@ export const AdminSidebar: React.FC = () => {
       <div className="p-4 border-t border-slate-800 flex items-center justify-between bg-slate-950/80">
         <div className="flex items-center gap-2.5 min-w-0">
           <img
-            src={user?.profileImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'}
+            src={
+              user?.profileImage ||
+              'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'
+            }
             alt="Admin"
             className="w-8 h-8 rounded-full object-cover border border-slate-700"
           />
+
           <div className="min-w-0">
-            <p className="text-xs font-bold text-white truncate">{user?.name || 'Administrator'}</p>
-            <p className="text-[10px] text-emerald-400 font-mono font-medium">SUPER ADMIN</p>
+            <p className="text-xs font-bold text-white truncate">
+              {user?.name || 'Administrator'}
+            </p>
+            <p className="text-[10px] text-emerald-400 font-mono font-medium">
+              SUPER ADMIN
+            </p>
           </div>
         </div>
 
