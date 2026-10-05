@@ -85,12 +85,13 @@ export const LocationCard: React.FC<LocationCardProps> = ({ location, showStatus
           />
 
           <Link
-            to={`/location/${location.id}`}
-            className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 transition-colors"
-          >
-            <span>Details</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+  to={`/location/${location.id}`}
+  onClick={(e) => e.stopPropagation()}
+  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-700 text-white text-xs font-bold hover:bg-brand-800 transition-colors shadow-sm"
+>
+  <span>Details</span>
+  <ArrowRight className="w-3.5 h-3.5" />
+</Link>
         </div>
       </div>
     </div>
