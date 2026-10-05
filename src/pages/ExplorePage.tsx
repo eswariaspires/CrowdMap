@@ -325,7 +325,7 @@ export const ExplorePage: React.FC = () => {
                 >
                   Clear search & filters
                 </button>
-              </div>
+              </div>  
             ) : (
               <div className="space-y-5 pr-1 pb-4">
                 {filteredLocations.map((loc) => (
